@@ -11,7 +11,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::post('/login', [App\Http\Controllers\Auth\AuthController::class , 'login']);
+Route::post('/register', [App\Http\Controllers\Auth\AuthController::class , 'register']);
+Route::post('/verify-register', [App\Http\Controllers\Auth\AuthController::class , 'verifyRegister']);
 
-Route::get('/hi', function(){
-    return 'hi';
-});

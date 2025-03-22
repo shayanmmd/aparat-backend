@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 
-class AuthRequest extends FormRequest
+class AuthLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,10 +32,9 @@ class AuthRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => 'Please provide your email address.',
-            'email.email' => 'The email address must be a valid email format.',
-            'password.required' => 'A password is required.',
-            'password.min' => 'The password must be at least 8 characters long.',
+            'email.required' => 'ایمیل اجباری است',
+            'email.email' => 'ایمیل فرمت درستی ندارد',
+            'password.required' => 'رمز عبور اجباری است'
         ];
     }
 

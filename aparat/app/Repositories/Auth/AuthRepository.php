@@ -3,10 +3,12 @@
 namespace App\Repositories\Auth;
 
 use App\Helpers\CustomResponse;
+use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\AuthRequest;
+use App\Http\Resources\UserResource;
 use App\Interfaces\Auth\AuthRepositoryInterface;
 use App\Models\User;
-use Hash as GlobalHash;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 
 class AuthRepository implements AuthRepositoryInterface
@@ -17,7 +19,7 @@ class AuthRepository implements AuthRepositoryInterface
         private CustomResponse $res
     ) {}
 
-    public function login(AuthRequest $request): CustomResponse
+    public function login(AuthLoginRequest $request): CustomResponse
     {
         $email = $request->all()['email'];
         $password = $request->all()['password'];
@@ -28,5 +30,16 @@ class AuthRepository implements AuthRepositoryInterface
         return $this->res->succeed($token->plainTextToken);
     }
 
-    public function register() {}
+    public function register($email, $verfy_code): CustomResponse
+    {
+        try {
+            $user = User::create([
+                'email' => $email,
+                'verify-code' => $verfy_code
+            ]);
+        } catch (Exception $e) {
+            return $this->res->failed();
+        }
+        return $this->res->succeed(new UserResource($user));
+    }
 }
