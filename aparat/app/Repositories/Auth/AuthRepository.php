@@ -4,7 +4,6 @@ namespace App\Repositories\Auth;
 
 use App\Helpers\CustomResponse;
 use App\Http\Requests\Auth\AuthLoginRequest;
-use App\Http\Requests\AuthRequest;
 use App\Http\Resources\UserResource;
 use App\Interfaces\Auth\AuthRepositoryInterface;
 use App\Models\User;
@@ -35,7 +34,7 @@ class AuthRepository implements AuthRepositoryInterface
         try {
             $user = User::create([
                 'email' => $email,
-                'verify-code' => $verfy_code
+                'verify_code' => $verfy_code
             ]);
         } catch (Exception $e) {
             return $this->res->failed();

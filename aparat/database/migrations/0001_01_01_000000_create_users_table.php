@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('name',30)->nullable();
             $table->string('password')->nullable();
             $table->string('avatar',150)->nullable();
-            $table->string('verify-code',6)->nullable();
-            $table->timestamp('verify-at')->nullable();
+            $table->string('verify_code',6)->nullable();
+            $table->timestamp('verify_at')->nullable();
             $table->timestamps();
             $table->enum('type',['admin','user'])->default('user');
         });

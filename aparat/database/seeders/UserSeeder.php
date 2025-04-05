@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             'mobile' => '09012508847',
             'name' => 'shayan',
             'password' => Hash::make('371382dfdsfs'),
-            'verify-at' => now()
+            'verify_at' => now()
         ]);
     }
 }
