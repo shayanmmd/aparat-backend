@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\User;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 
-class AuthRegisterRequest extends FormRequest
+
+class VerifyChangeEmailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,21 +26,20 @@ class AuthRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required'
+            'code' => 'required|digits:6'
         ];
     }
 
     public function messages()
     {
         return [
-            'email.required' => 'ایمیل اجباری هست',
-            'email.email' => 'ایمیل فرمت درستی ندارد',
-            'password.required' => 'وارد کردن پسوورد اجباری است'
+            'code.required' => 'کد تایید اجباری است',
+            'code.digits' => 'کد تایید تغییر ایمیل باید 6 رقمی باشد'
         ];
     }
 
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator){
+    protected function failedValidation(Validator $validator)
+    {
         $response = response()->json([
             'success' => false,
             'errors' => $validator->errors(),  

@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         if (!$response->isSuccessful()) {
             return response()->json([
-                'message' => 'email or password is wrong'
+                'message' => 'ایمیل یا پسوورد اشتباه است'
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -40,9 +40,9 @@ class AuthController extends Controller
                 'message' => 'این ایمیل در سیستم وجود دارد'
             ], Response::HTTP_BAD_REQUEST);
         }
-        $code = random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
+        $code = generateCodeRandom();
         //TODO:ارسال کد تاییدیه به کاربر در ایمیل 
-        $response = $this->authRepositoryInterface->register($request->email, $code);
+        $response = $this->authRepositoryInterface->register($request->email, $code,$request->password);
         if (!$response->isSuccessful()) {
             return response()->json([
                 $response->getMessage()

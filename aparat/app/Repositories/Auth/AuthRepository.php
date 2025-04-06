@@ -25,15 +25,16 @@ class AuthRepository implements AuthRepositoryInterface
         $user = User::where('email', '=', $email)->first();
         if (!$user || !Hash::check($password, $user->password))
             return $this->res->failed();
-        $token = $user->createToken('hi');
+        $token = $user->createToken('auth.login');
         return $this->res->succeed($token->plainTextToken);
     }
 
-    public function register($email, $verfy_code): CustomResponse
+    public function register($email, $verfy_code,$password): CustomResponse
     {
         try {
             $user = User::create([
                 'email' => $email,
+                'password' => Hash::make($password),
                 'verify_code' => $verfy_code
             ]);
         } catch (Exception $e) {

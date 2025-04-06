@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'change_email_verification_code_expiration_in_seconds' => env('CHANGE_EMAIL_VERIFICATION_CODE_EXPIRATION_IN_SECONDS', 120)
+
 ];
