@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('channels', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user-id');
-            $table->text('info');
-            $table->string('picture', 150);
+            $table->string('name');
+            $table->text('info')->nullable();
+            $table->string('picture', 150)->nullable();
             $table->text('socials')->nullable();
             $table->timestamps();
 

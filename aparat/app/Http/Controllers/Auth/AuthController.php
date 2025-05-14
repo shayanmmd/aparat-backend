@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
 use App\Http\Requests\Auth\AuthVerifyRegisterRequest;
 use App\Interfaces\Auth\AuthRepositoryInterface;
+use App\Models\Channel;
 use App\Models\User;
 use Illuminate\Http\Response;
 
@@ -81,6 +82,10 @@ class AuthController extends Controller
                 'message' => 'کاربر بروزرسانی نشد'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+        Channel::create([
+            'name' => $user->email,
+            'user-id' => $user->id
+        ]);
         return response()->json([
             'message' => 'کاربر در سیستم با موفقیت تایید شد'
         ], Response::HTTP_OK);
