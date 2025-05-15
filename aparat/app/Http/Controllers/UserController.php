@@ -6,10 +6,7 @@ use App\Http\Requests\User\ChangeEmailRequest;
 use App\Http\Requests\User\VerifyChangeEmailRequest;
 use App\Models\User;
 use Cache;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
-use function PHPUnit\Framework\isEmpty;
 
 class UserController extends Controller
 {
@@ -20,10 +17,11 @@ class UserController extends Controller
         $userEmail = $request->user()->email;
         $code = generateCodeRandom();
         $expirationTime = config('app.change_email_verification_code_expiration_in_seconds', 120);
-//TODO:ارسال کد تایید برای تغییر ایمیل در ایمیل شخص
         Cache::put(self::CACHE_KEY_EMAIL_VERIFICATION_CODE . $userEmail, [$request->email, $code], $expirationTime);
-        
-        dd(Cache::get(self::CACHE_KEY_EMAIL_VERIFICATION_CODE . $userEmail));
+        //TODO:ارسال کد تایید برای تغییر ایمیل در ایمیل شخص
+        return response()->json([
+            "data" => 'ایمیل موقتا ثبت شد... در انتظار تایید'
+        ]);
     }
 
     public function verifyChangeEmail(VerifyChangeEmailRequest $request)
@@ -32,15 +30,18 @@ class UserController extends Controller
         $newEmailAndVerificationCode = Cache::get(self::CACHE_KEY_EMAIL_VERIFICATION_CODE . $userEmail);
         if ($newEmailAndVerificationCode == null) {
             return response()->json(
-                'کد تایید منقضی شده است',
+                [
+                    "data" => 'کد تایید منقضی شده است'
+                ],
                 Response::HTTP_BAD_REQUEST
             );
         }
 
-        // dd($newEmailAndVerificationCode[1]);
         if ($request->code != $newEmailAndVerificationCode[1]) {
             return response()->json(
-                'کد تایید اشتباه است',
+                [
+                    "data" => 'کد تایید اشتباه است'
+                ],
                 Response::HTTP_BAD_REQUEST
             );
         }
@@ -49,8 +50,9 @@ class UserController extends Controller
         ]);
         Cache::delete(self::CACHE_KEY_EMAIL_VERIFICATION_CODE . $userEmail);
         return response()->json(
-            'ایمیل با موفقیت تغییر کرد',
-            200
+            [
+                "data" => 'ایمیل با موفقیت تغییر کرد'
+            ]
         );
     }
 }

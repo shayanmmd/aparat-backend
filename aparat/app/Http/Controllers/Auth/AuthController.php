@@ -43,7 +43,7 @@ class AuthController extends Controller
         }
         $code = generateCodeRandom();
         //TODO:ارسال کد تاییدیه به کاربر در ایمیل 
-        $response = $this->authRepositoryInterface->register($request->email, $code,$request->password);
+        $response = $this->authRepositoryInterface->register($request->email, $code, $request->password);
         if (!$response->isSuccessful()) {
             return response()->json([
                 $response->getMessage()
@@ -63,12 +63,12 @@ class AuthController extends Controller
                 'message' => 'این ایمیل در سیستم وجود ندارد'
             ], Response::HTTP_BAD_REQUEST);
         }
-        if(!is_null($user->verify_at)){
+        if (!is_null($user->verify_at)) {
             return response()->json([
                 'message' => 'این ایمیل در سیستم تایید شده است'
             ], Response::HTTP_BAD_REQUEST);
-        }  
-        if($user->verify_code != $request->code){
+        }
+        if ($user->verify_code != $request->code) {
             return response()->json([
                 'message' => 'کد تایید اشتباه است'
             ], Response::HTTP_BAD_REQUEST);
@@ -77,7 +77,7 @@ class AuthController extends Controller
             'verify_at' => now(),
             'verify_code' => null
         ]);
-        if(!$isUpdated){
+        if (!$isUpdated) {
             return response()->json([
                 'message' => 'کاربر بروزرسانی نشد'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
