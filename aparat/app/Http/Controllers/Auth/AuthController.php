@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
 use App\Http\Requests\Auth\AuthVerifyRegisterRequest;
 use App\Interfaces\Auth\AuthRepositoryInterface;
+use App\Interfaces\Services\Email\EmailServiceInterface;
 use App\Models\Channel;
 use App\Models\User;
 use Illuminate\Http\Response;
@@ -15,7 +16,8 @@ class AuthController extends Controller
 {
 
     public function __construct(
-        private AuthRepositoryInterface $authRepositoryInterface
+        private AuthRepositoryInterface $authRepositoryInterface,
+        private EmailServiceInterface $emailServiceInterface
     ) {}
 
     public function login(AuthLoginRequest $request)
@@ -42,7 +44,9 @@ class AuthController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
         $code = generateCodeRandom();
-        //TODO:ارسال کد تاییدیه به کاربر در ایمیل 
+
+        $this->emailServiceInterface->send($code);
+
         $response = $this->authRepositoryInterface->register($request->email, $code, $request->password);
         if (!$response->isSuccessful()) {
             return response()->json([

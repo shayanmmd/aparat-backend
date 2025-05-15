@@ -6,14 +6,12 @@ use App\Helpers\CustomResponse;
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Interfaces\Auth\AuthRepositoryInterface;
-use App\Models\Channel;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 
 class AuthRepository implements AuthRepositoryInterface
 {
-
 
     public function __construct(
         private CustomResponse $res
@@ -38,8 +36,6 @@ class AuthRepository implements AuthRepositoryInterface
                 'password' => Hash::make($password),
                 'verify_code' => $verfy_code
             ]);
-
-           
         } catch (Exception $e) {
             return $this->res->failed();
         }

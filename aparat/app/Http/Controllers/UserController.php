@@ -4,55 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\ChangeEmailRequest;
 use App\Http\Requests\User\VerifyChangeEmailRequest;
-use App\Models\User;
-use Cache;
-use Illuminate\Http\Response;
+use App\Interfaces\User\UserRespositoryInterface;
 
 class UserController extends Controller
 {
-    const CACHE_KEY_EMAIL_VERIFICATION_CODE = 'change-email-verification-code-';
+
+    public function __construct(
+        private UserRespositoryInterface $userRespositoryInterface
+    ) {}
+
 
     public function changeEmail(ChangeEmailRequest $request)
     {
-        $userEmail = $request->user()->email;
-        $code = generateCodeRandom();
-        $expirationTime = config('app.change_email_verification_code_expiration_in_seconds', 120);
-        Cache::put(self::CACHE_KEY_EMAIL_VERIFICATION_CODE . $userEmail, [$request->email, $code], $expirationTime);
-        //TODO:ارسال کد تایید برای تغییر ایمیل در ایمیل شخص
-        return response()->json([
-            "data" => 'ایمیل موقتا ثبت شد... در انتظار تایید'
-        ]);
+        $res =  $this->userRespositoryInterface->changeEmail($request);
+        
     }
 
     public function verifyChangeEmail(VerifyChangeEmailRequest $request)
     {
-        $userEmail = $request->user()->email;
-        $newEmailAndVerificationCode = Cache::get(self::CACHE_KEY_EMAIL_VERIFICATION_CODE . $userEmail);
-        if ($newEmailAndVerificationCode == null) {
-            return response()->json(
-                [
-                    "data" => 'کد تایید منقضی شده است'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        if ($request->code != $newEmailAndVerificationCode[1]) {
-            return response()->json(
-                [
-                    "data" => 'کد تایید اشتباه است'
-                ],
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-        User::where('email', '=', $userEmail)->update([
-            'email' => $newEmailAndVerificationCode[0]
-        ]);
-        Cache::delete(self::CACHE_KEY_EMAIL_VERIFICATION_CODE . $userEmail);
-        return response()->json(
-            [
-                "data" => 'ایمیل با موفقیت تغییر کرد'
-            ]
-        );
+        return $this->userRespositoryInterface->verifyChangeEmail($request);
     }
 }
