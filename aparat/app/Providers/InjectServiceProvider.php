@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
-use App\Interfaces\Auth\AuthRepositoryInterface;
+use App\Interfaces\Models\Auth\AuthRepositoryInterface;
+use App\Interfaces\Models\Channel\ChannelRepositoryInterface;
 use App\Interfaces\Services\Email\EmailServiceInterface;
-use App\Interfaces\User\UserRespositoryInterface;
+use App\Interfaces\Models\User\UserRespositoryInterface;
 use App\Repositories\Auth\AuthRepository;
+use App\Repositories\Channel\ChannelRepository;
 use App\Repositories\User\UserRespository;
 use App\Services\Email\EmailService;
 use Illuminate\Support\ServiceProvider;
@@ -25,5 +27,6 @@ class InjectServiceProvider extends ServiceProvider
         $this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
         $this->app->bind(UserRespositoryInterface::class, UserRespository::class);
         $this->app->bind(EmailServiceInterface::class, EmailService::class);
+        $this->app->bind(ChannelRepositoryInterface::class, ChannelRepository::class);
     }
 }

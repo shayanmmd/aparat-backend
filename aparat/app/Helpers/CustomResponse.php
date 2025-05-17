@@ -2,21 +2,31 @@
 
 namespace App\Helpers;
 
+use Exception;
 use Illuminate\Http\Response;
 
 class CustomResponse
 {
 
     private $success = false;
-    private $message;
     private $payload;
     private $statuscode;
 
-    public function failed($message = "", $statuscode = Response::HTTP_INTERNAL_SERVER_ERROR)
+    public function failed($payload = "", $statuscode = Response::HTTP_INTERNAL_SERVER_ERROR)
     {
-        $this->message = $message;
+        $this->payload = $payload;
         $this->success = false;
         $this->statuscode = $statuscode;
+        return $this;
+    }
+
+    public function tryCatchError()
+    {
+        $this->success = false;
+        $this->payload = [
+            'message' => 'خطایی در سرور رخخ داده است. با پشتیبانی تماس بگیرید'
+        ];
+        $this->statuscode = Response::HTTP_INTERNAL_SERVER_ERROR;
         return $this;
     }
 
@@ -33,11 +43,6 @@ class CustomResponse
         return $this->success;
     }
 
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
     public function getPayload()
     {
         return $this->payload;
@@ -46,5 +51,10 @@ class CustomResponse
     public function getStatusCode()
     {
         return $this->statuscode;
+    }
+
+    public function json()
+    {
+        return response()->json($this->getPayload(), $this->getStatusCode());
     }
 }

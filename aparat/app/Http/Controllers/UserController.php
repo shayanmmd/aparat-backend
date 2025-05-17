@@ -16,12 +16,15 @@ class UserController extends Controller
 
     public function changeEmail(ChangeEmailRequest $request)
     {
-        $res =  $this->userRespositoryInterface->changeEmail($request);
-        
+        $response =  $this->userRespositoryInterface->changeEmail($request);
+
+        return $response->json();
     }
 
     public function verifyChangeEmail(VerifyChangeEmailRequest $request)
     {
-        return $this->userRespositoryInterface->verifyChangeEmail($request);
+        $response = $this->userRespositoryInterface->verifyChangeEmail($request);
+
+        return $response->json();
     }
 }
