@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-use Exception;
 use Illuminate\Http\Response;
 
 class CustomResponse

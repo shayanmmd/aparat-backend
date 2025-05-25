@@ -42,7 +42,7 @@ class AuthLoginRequest extends FormRequest
         $response = response()->json([
             'success' => false,
             'errors' => $validator->errors(),  
-            'message' => 'Validation failed.',
+            'message' => 'خطای اعتبار سنجی',
         ], Response::HTTP_UNPROCESSABLE_ENTITY);
 
         throw new HttpResponseException($response);
