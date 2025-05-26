@@ -29,10 +29,10 @@ class CustomResponse
         return $this;
     }
 
-    public function succeed($payload, $statuscode = Response::HTTP_OK)
+    public function succeed($payload = null, $statuscode = Response::HTTP_OK)
     {
         $this->success = true;
-        $this->payload = $payload;
+        $this->payload = $payload ? $payload : ["message" => 'عملیات با موفقیت انجام شد'];
         $this->statuscode = $statuscode;
         return $this;
     }

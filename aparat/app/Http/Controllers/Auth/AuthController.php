@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
 use App\Http\Requests\Auth\AuthVerifyRegisterRequest;
-use App\Interfaces\Auth\AuthRepositoryInterface;
 use App\Interfaces\Services\Email\EmailServiceInterface;
 use App\Models\User;
 use Illuminate\Http\Response;
@@ -15,7 +14,7 @@ class AuthController extends Controller
 {
 
     public function __construct(
-        private AuthRepositoryInterface $authRepositoryInterface,
+        private \App\Interfaces\Models\Auth\AuthRepositoryInterface $authRepositoryInterface,
         private EmailServiceInterface $emailServiceInterface
     ) {}
 

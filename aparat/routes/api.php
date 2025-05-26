@@ -9,8 +9,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/change-email', [UserController::class, 'changeEmail']);
     Route::post('/verify-change-email', [UserController::class, 'verifyChangeEmail']);
 
-    Route::prefix('/channel')->group(function () {
-        Route::put('/update', [ChannelController::class, 'update']);
+    Route::prefix('/channel')->group(function ($route) {
+        $route->put('/update', [ChannelController::class, 'update']);
+        $route->post('/upload-banner', [ChannelController::class, 'uploadBanner']);
     });
 });
 

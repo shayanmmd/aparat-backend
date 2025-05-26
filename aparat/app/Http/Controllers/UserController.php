@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\ChangeEmailRequest;
 use App\Http\Requests\User\VerifyChangeEmailRequest;
-use App\Interfaces\User\UserRespositoryInterface;
 
 class UserController extends Controller
 {
 
     public function __construct(
-        private UserRespositoryInterface $userRespositoryInterface
+        private \App\Interfaces\Models\User\UserRespositoryInterface $userRespositoryInterface
     ) {}
 
 
