@@ -8,4 +8,5 @@ use App\Http\Requests\Channel\ChannelUpdateRequest;
 interface ChannelRepositoryInterface
 {
     public function update(ChannelUpdateRequest $request): CustomResponse;
+    public function createOrUpdateBanner($bannerUrl): CustomResponse;
 }

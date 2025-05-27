@@ -30,11 +30,34 @@ class ChannelRepository implements ChannelRepositoryInterface
 
             if (! $isUpdated)
                 return $res->failed(['message' => 'کانال به درستی ویرایش نشد']);
-
         } catch (Exception $th) {
             return $res->tryCatchError();
         }
 
         return $res->succeed(['message' => 'کانال با موفقیت ویرایش شد']);
+    }
+
+    public function createOrUpdateBanner($bannerUrl): CustomResponse
+    {
+        $res = new CustomResponse;
+
+        try {
+            $channel = Channel::where('user-id', '=', Auth::user()->id)->firstOrFail();
+            if (!$channel)
+                return $res->failed();
+
+            $isUpdated = $channel->update([
+                'picture' => $bannerUrl
+            ]);
+
+            if (!$isUpdated)
+                return $res->failed();
+
+        } catch (\Throwable $th) {
+            dd($th);
+            return $res->tryCatchError();
+        }
+
+        return $res->succeed(['message' => 'تصویر کانال با موفقیت تغییر کرد']);
     }
 }

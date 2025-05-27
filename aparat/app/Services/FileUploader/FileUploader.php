@@ -30,6 +30,6 @@ class FileUploader implements FileUploaderInterface
 
         $url = url('storage/' . $path);
 
-        return $res->succeed(['url' => $url]);
+        return $res->succeed($url);
     }
 }

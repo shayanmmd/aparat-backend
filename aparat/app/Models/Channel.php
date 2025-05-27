@@ -9,4 +9,5 @@ class Channel extends Model
     protected $table = 'channels';
 
     protected $guarded = [];
+
 }
