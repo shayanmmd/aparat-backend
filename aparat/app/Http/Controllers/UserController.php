@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\ChangeEmailRequest;
+use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\VerifyChangeEmailRequest;
 
 class UserController extends Controller
@@ -25,5 +26,11 @@ class UserController extends Controller
         $response = $this->userRespositoryInterface->verifyChangeEmail($request);
 
         return $response->json();
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $res = $this->userRespositoryInterface->changePassword($request);
+        return $res->json();
     }
 }

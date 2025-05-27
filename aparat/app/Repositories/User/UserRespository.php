@@ -4,13 +4,16 @@ namespace App\Repositories\User;
 
 use App\Helpers\CustomResponse;
 use App\Http\Requests\User\ChangeEmailRequest;
+use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\VerifyChangeEmailRequest;
 use App\Interfaces\Models\User\UserRespositoryInterface;
 use App\Interfaces\Services\Email\EmailServiceInterface;
 use App\Models\User;
+use Auth;
 use Cache;
 use Exception;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class UserRespository implements UserRespositoryInterface
 {
@@ -76,5 +79,29 @@ class UserRespository implements UserRespositoryInterface
                 "data" => 'ایمیل با موفقیت تغییر کرد'
             ]
         );
+    }
+
+    public function changePassword(ChangePasswordRequest $request): CustomResponse
+    {
+        $res = new CustomResponse;
+
+        try {
+            $user = Auth::user();
+
+            if (!Hash::check($request->old_password, $user->password))
+                return $res->failed(['message' => 'پسوورد قدیمی با پسوورد فعلی مطابقت ندارد']);
+
+            $isUpdated = $user->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+
+            if (!$isUpdated)
+                return $res->failed(['message' => 'پسوورد با موفقیت تغییر نیافت دوباره تلاش کنید']);
+
+        } catch (\Throwable $th) {
+            return $res->tryCatchError();
+        }
+
+        return $res->succeed(['message' => 'پسوورد با موفقیت تغییر یافت']);
     }
 }

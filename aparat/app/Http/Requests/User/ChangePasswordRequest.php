@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests\User;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 
-
-class ChangeEmailRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,23 +24,24 @@ class ChangeEmailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email'
+            'old_password' => 'required',
+            'new_password' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
-            'email.required' => 'ایمیل اجباری است',
-            'email.email' => 'فرمت ایمیل اشتباه است'
+            'old_password.required' => 'وارد کردن پسوورد قدیمی الزامی است',
+            'new_password.required' => 'وارد کردن پسوورد جدید الزامی است'
         ];
     }
 
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         $response = response()->json([
             'success' => false,
-            'errors' => $validator->errors(),  
+            'errors' => $validator->errors(),
             'message' => 'خطا در اعتبار سنجی',
         ], Response::HTTP_UNPROCESSABLE_ENTITY);
 
