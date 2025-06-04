@@ -30,10 +30,6 @@ class Initialization extends Command
         try {
             $this->info('Setting up the program...');
 
-            $installComposer = new Process(['composer', 'install']);
-            $res = $installComposer->mustRun();
-            $this->info($res->getOutput());
-
             $this->info('key app is being generated...');
             $this->call('key:generate');
 

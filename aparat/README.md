@@ -1,4 +1,5 @@
 # Setting up
+    compose install
     php artisan app:start
 
 This command is when it's you very first time to run the application.It will automaticaly run some other commands.
