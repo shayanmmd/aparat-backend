@@ -17,12 +17,12 @@ class VideoController extends Controller
     public function create(CreateVideoRequest $request)
     {
         $res = $this->videoRepositoryInterface->create($request);
-        $res->json();
+        return $res->json();
     }
 
     public function upload(UploadVideoRequest $request)
     {
         $res = $this->videoRepositoryInterface->upload($request);
-        $res->json();
+        return $res->json();
     }
 }

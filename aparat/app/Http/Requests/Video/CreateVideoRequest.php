@@ -24,23 +24,24 @@ class CreateVideoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "category-id" => 'required|integer|exists:categories,id',
-            "slug" => 'required|string|max:70',
+            "category_id" => 'required|integer|exists:categories,id',
+            "slug" => 'required|unique:videos|string|max:70',
             "title" => 'required|string|max:50',
             "info" => 'nullable|string',
             "duration" => 'required|integer',
             "banner" => 'nullable|url',
-            "publish-at" => 'nullable|date'
+            "publish_at" => 'nullable|date'
         ];
     }
 
     public function messages()
     {
         return [
-            'category-id.required' => 'فیلد دسته بندی اجباری است',
-            'category-id.integer' => 'فیلد دسته بندی باید یک عدد باشد',
-            'category-id.exists' => 'فیلد دسته بندی باید در جدول مربوطه وجود داشته باشد',
+            'category_id.required' => 'فیلد دسته بندی اجباری است',
+            'category_id.integer' => 'فیلد دسته بندی باید یک عدد باشد',
+            'category_id.exists' => 'فیلد دسته بندی باید در جدول مربوطه وجود داشته باشد',
             'slug.required' => 'فیلد شعار اجباری است',
+            'slug.unique' => 'فیلد شعار تکراری است',
             'slug.string' => 'فیلد شعار باید رشته باشد',
             'slug.max' => 'فیلد شعار نمیتواند بیش از 70 کاراکتر باشد',
             'title.required' => 'عنوان اجباری است',
@@ -50,7 +51,7 @@ class CreateVideoRequest extends FormRequest
             'duration.required' => 'مدت زمان اجباری است',
             'duration.integer' => 'مدت زمان بایدد یک عدد باشد',
             'banner.url' => 'بنر باید یک ادرس وب سایت باشد',
-            'publish-at.date' => 'زمان انتشار باید یک تاریخ معتبر باشد'
+            'publish_at.date' => 'زمان انتشار باید یک تاریخ معتبر باشد'
         ];
     }
 

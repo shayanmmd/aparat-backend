@@ -7,7 +7,11 @@ use App\Http\Requests\Video\CreateVideoRequest;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Interfaces\Models\Video\VideoRepositoryInterface;
 use App\Interfaces\Services\FileUploader\FileUploaderInterface;
+use App\Models\Video;
+use App\Services\FileUploader\FileUploader;
 use Auth;
+use File;
+use Storage;
 
 class VideoRepository implements VideoRepositoryInterface
 {
@@ -21,6 +25,21 @@ class VideoRepository implements VideoRepositoryInterface
         $res = new CustomResponse;
 
         try {
+
+            // Video::create([
+            //     'category-id' => $request->category_id,
+            //     'user-id' => Auth::user()->id,
+            //     'slug' => $request->slug,
+            //     'title' => $request->title,
+            //     'info' => $request->info,
+            //     'duration' => $request->duration,
+            //     'banner' => $request->banner,
+            //     'publish-at' => $request->publish_at ?? now(),
+            // ]);
+
+            //TODO: video from temp file must be moved to another diirectory
+
+          
         } catch (\Throwable $th) {
             return $res->tryCatchError();
         }
@@ -33,13 +52,15 @@ class VideoRepository implements VideoRepositoryInterface
         $res = new CustomResponse;
 
         try {
-            $result = $this->fileUploaderInterface->store($request->file('video'), Auth::user()->id, '/temps', isMD5: true);
+
+            //TODO: this temp video must not be publicly accessable
+
+            $result = $this->fileUploaderInterface->store($request->file('video'), $request->name, '/temps', isMD5: true);
 
             if (!$result->isSuccessful())
-                return $result;
+                return $res->failed($result);
 
-            return $result->getPayload();
-            
+            return $res->succeed($result->getPayload());
         } catch (\Throwable $th) {
             return $res->tryCatchError();
         }
