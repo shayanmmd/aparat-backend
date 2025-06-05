@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Channel\ChannelController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Video\VideoController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -13,6 +14,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('/channel')->group(function () {
         Route::put('/update', [ChannelController::class, 'update']);
         Route::post('/upload-banner', [ChannelController::class, 'uploadBanner']);
+    });
+
+    Route::prefix('/video')->group(function(){
+        Route::post('/',[VideoController::class,'create']);
+        Route::post('/upload',[VideoController::class,'upload']);
     });
 });
 

@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Http\Controllers\Video;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Video\CreateVideoRequest;
+use App\Http\Requests\Video\UploadVideoRequest;
+use App\Interfaces\Models\Video\VideoRepositoryInterface;
+
+class VideoController extends Controller
+{
+
+    public function __construct(
+        private VideoRepositoryInterface $videoRepositoryInterface
+    ) {}
+
+    public function create(CreateVideoRequest $request)
+    {
+        $res = $this->videoRepositoryInterface->create($request);
+        $res->json();
+    }
+
+    public function upload(UploadVideoRequest $request)
+    {
+        $res = $this->videoRepositoryInterface->upload($request);
+        $res->json();
+    }
+}
