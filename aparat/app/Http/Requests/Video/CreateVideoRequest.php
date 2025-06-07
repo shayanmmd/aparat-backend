@@ -5,6 +5,7 @@ namespace App\Http\Requests\Video;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
 class CreateVideoRequest extends FormRequest
 {
@@ -29,7 +30,8 @@ class CreateVideoRequest extends FormRequest
             "title" => 'required|string|max:50',
             "info" => 'nullable|string',
             "duration" => 'required|integer',
-            "banner" => 'nullable|url',
+            "tags" => 'nullable|array',
+            "tags.*" => 'integer|exists:tags,id',
             "publish_at" => 'nullable|date'
         ];
     }
@@ -50,7 +52,9 @@ class CreateVideoRequest extends FormRequest
             'info.string' => 'اطلاعات باید رشته باشد',
             'duration.required' => 'مدت زمان اجباری است',
             'duration.integer' => 'مدت زمان بایدد یک عدد باشد',
-            'banner.url' => 'بنر باید یک ادرس وب سایت باشد',
+            'tags.array' => 'تگ باید یک ارایه باشد',
+            'tags.*.integer' => 'تگ ها باید یک ارایه از اعداد صحیح باشد',
+            'tags.*.exists' => 'این تگ وجود ندارد',
             'publish_at.date' => 'زمان انتشار باید یک تاریخ معتبر باشد'
         ];
     }

@@ -8,9 +8,8 @@ use App\Http\Requests\Video\UploadVideoRequest;
 use App\Interfaces\Models\Video\VideoRepositoryInterface;
 use App\Interfaces\Services\FileUploader\FileUploaderInterface;
 use App\Models\Video;
-use App\Services\FileUploader\FileUploader;
 use Auth;
-use File;
+use Illuminate\Http\Response;
 use Storage;
 
 class VideoRepository implements VideoRepositoryInterface
@@ -26,20 +25,28 @@ class VideoRepository implements VideoRepositoryInterface
 
         try {
 
-            // Video::create([
-            //     'category-id' => $request->category_id,
-            //     'user-id' => Auth::user()->id,
-            //     'slug' => $request->slug,
-            //     'title' => $request->title,
-            //     'info' => $request->info,
-            //     'duration' => $request->duration,
-            //     'banner' => $request->banner,
-            //     'publish-at' => $request->publish_at ?? now(),
-            // ]);
+            //TODO: create playlist with creating video
 
-            //TODO: video from temp file must be moved to another diirectory
+            $from = 'temps/' . md5($request->slug) . '.mp4';
+            $to = 'videos/' . md5($request->slug) . '.mp4';
 
-          
+            $isMoved = Storage::disk('public')->move($from, $to);
+
+            if (!$isMoved)
+                return $res->failed(['message' => 'خطا در اپلود ویدیو'], Response::HTTP_BAD_REQUEST);
+
+            $video = Video::create([
+                'category-id' => $request->category_id,
+                'user-id' => Auth::user()->id,
+                'slug' => $request->slug,
+                'title' => $request->title,
+                'info' => $request->info,
+                'duration' => $request->duration,
+                'publish-at' => $request->publish_at ?? now(),
+            ]);
+
+            $video->tags()->attach($request->tags);
+
         } catch (\Throwable $th) {
             return $res->tryCatchError();
         }
@@ -55,7 +62,7 @@ class VideoRepository implements VideoRepositoryInterface
 
             //TODO: this temp video must not be publicly accessable
 
-            $result = $this->fileUploaderInterface->store($request->file('video'), $request->name, '/temps', isMD5: true);
+            $result = $this->fileUploaderInterface->store($request->file('video'), $request->slug, '/temps', isMD5: true);
 
             if (!$result->isSuccessful())
                 return $res->failed($result);
