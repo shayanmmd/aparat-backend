@@ -12,6 +12,7 @@ class Video extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class,'video-tags','video-id','tag-id');
+        return $this->belongsToMany(Tag::class, 'video-tags', 'video-id', 'tag-id');
     }
+
 }
