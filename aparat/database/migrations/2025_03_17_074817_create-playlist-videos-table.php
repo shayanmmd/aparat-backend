@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('video-id');
             $table->unsignedBigInteger('playlist-id');
-            $table->timestamps();
 
             $table->foreign('video-id')
                 ->references('id')

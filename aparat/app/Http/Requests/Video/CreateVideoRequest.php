@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\Video;
 
+use App\Rules\OwnPlaylistId;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Exists;
 
 class CreateVideoRequest extends FormRequest
 {
@@ -32,6 +34,7 @@ class CreateVideoRequest extends FormRequest
             "duration" => 'required|integer',
             "tags" => 'nullable|array',
             "tags.*" => 'integer|exists:tags,id',
+            "playlist" => [new OwnPlaylistId, 'nullable', 'integer', new Exists('playlists', 'id')],
             "publish_at" => 'nullable|date'
         ];
     }
@@ -55,7 +58,9 @@ class CreateVideoRequest extends FormRequest
             'tags.array' => 'تگ باید یک ارایه باشد',
             'tags.*.integer' => 'تگ ها باید یک ارایه از اعداد صحیح باشد',
             'tags.*.exists' => 'این تگ وجود ندارد',
-            'publish_at.date' => 'زمان انتشار باید یک تاریخ معتبر باشد'
+            'publish_at.date' => 'زمان انتشار باید یک تاریخ معتبر باشد',
+            'playlist.integer' => 'لیست پخش باید عدد صحیح باشد',
+            'playlist.exists' => 'لیست پخش وجود ندارد'
         ];
     }
 

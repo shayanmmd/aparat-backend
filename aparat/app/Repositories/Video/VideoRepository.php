@@ -7,8 +7,10 @@ use App\Http\Requests\Video\CreateVideoRequest;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Interfaces\Models\Video\VideoRepositoryInterface;
 use App\Interfaces\Services\FileUploader\FileUploaderInterface;
+use App\Models\Playlist;
 use App\Models\Video;
 use Auth;
+use DB;
 use Illuminate\Http\Response;
 use Storage;
 
@@ -25,15 +27,15 @@ class VideoRepository implements VideoRepositoryInterface
 
         try {
 
-            //TODO: create playlist with creating video
+            // $from = 'temps/' . md5($request->slug) . '.mp4';
+            // $to = 'videos/' . md5($request->slug) . '.mp4';
 
-            $from = 'temps/' . md5($request->slug) . '.mp4';
-            $to = 'videos/' . md5($request->slug) . '.mp4';
+            // $isMoved = Storage::disk('public')->move($from, $to);
 
-            $isMoved = Storage::disk('public')->move($from, $to);
+            // if (!$isMoved)
+            //     return $res->failed(['message' => 'خطا در اپلود ویدیو'], Response::HTTP_BAD_REQUEST);
 
-            if (!$isMoved)
-                return $res->failed(['message' => 'خطا در اپلود ویدیو'], Response::HTTP_BAD_REQUEST);
+            DB::beginTransaction();
 
             $video = Video::create([
                 'category-id' => $request->category_id,
@@ -46,8 +48,11 @@ class VideoRepository implements VideoRepositoryInterface
             ]);
 
             $video->tags()->attach($request->tags);
+            $video->playlist()->attach($request->playlist);
 
+            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             return $res->tryCatchError();
         }
 

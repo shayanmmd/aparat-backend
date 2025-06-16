@@ -15,4 +15,9 @@ class Video extends Model
         return $this->belongsToMany(Tag::class, 'video-tags', 'video-id', 'tag-id');
     }
 
+    public function playlist()
+    {
+        return $this->belongsToMany(Playlist::class,'playlist-videos','video-id','playlist-id');
+    }
+
 }
