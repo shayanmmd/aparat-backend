@@ -27,13 +27,13 @@ class VideoRepository implements VideoRepositoryInterface
 
         try {
 
-            // $from = 'temps/' . md5($request->slug) . '.mp4';
-            // $to = 'videos/' . md5($request->slug) . '.mp4';
+            $from = 'temps/' . md5($request->slug) . '.mp4';
+            $to = 'videos/' . md5($request->slug) . '.mp4';
 
-            // $isMoved = Storage::disk('public')->move($from, $to);
+            $isMoved = Storage::disk('public')->move($from, $to);
 
-            // if (!$isMoved)
-            //     return $res->failed(['message' => 'خطا در اپلود ویدیو'], Response::HTTP_BAD_REQUEST);
+            if (!$isMoved)
+                return $res->failed(['message' => 'خطا در اپلود ویدیو'], Response::HTTP_BAD_REQUEST);
 
             DB::beginTransaction();
 

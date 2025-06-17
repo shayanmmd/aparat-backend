@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Channel\ChannelController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Playlist\PlaylistController;
 use App\Http\Controllers\Video\VideoController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('/video')->group(function(){
         Route::post('/',[VideoController::class,'create']);
         Route::post('/upload',[VideoController::class,'upload']);
+    });
+
+    Route::prefix('/playlist')->group(function(){
+        Route::post('/',[PlaylistController::class,'create']);
+        Route::get('/',[PlaylistController::class,'all']);
     });
 });
 
