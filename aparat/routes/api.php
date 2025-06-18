@@ -3,6 +3,7 @@
 use App\Http\Controllers\Channel\ChannelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Playlist\PlaylistController;
+use App\Http\Controllers\Tag\TagController;
 use App\Http\Controllers\Video\VideoController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('/playlist')->group(function(){
         Route::post('/',[PlaylistController::class,'create']);
         Route::get('/',[PlaylistController::class,'all']);
+    });
+
+    Route::prefix('/tag')->group(function(){
+        Route::post('/',[TagController::class,'create']);
+        Route::get('/',[TagController::class,'all']);
     });
 });
 
