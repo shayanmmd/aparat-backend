@@ -7,6 +7,12 @@ use App\Models\Tag;
 
 class Video extends Model
 {
+
+    const PENDING = 'pending';
+    const CONFIRMED = 'confirmed';
+    const BLOCKED = 'blocked';
+    const STATES = [self::PENDING, self::CONFIRMED, self::BLOCKED];
+
     protected $table = 'videos';
     protected $guarded = ['id'];
 
@@ -17,7 +23,6 @@ class Video extends Model
 
     public function playlist()
     {
-        return $this->belongsToMany(Playlist::class,'playlist-videos','video-id','playlist-id');
+        return $this->belongsToMany(Playlist::class, 'playlist-videos', 'video-id', 'playlist-id');
     }
-
 }

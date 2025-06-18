@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Exists;
 
 class CreateVideoRequest extends FormRequest
@@ -35,7 +36,8 @@ class CreateVideoRequest extends FormRequest
             "tags" => 'nullable|array',
             "tags.*" => 'integer|exists:tags,id',
             "playlist" => [new OwnPlaylistId, 'nullable', 'integer', new Exists('playlists', 'id')],
-            "publish_at" => 'nullable|date'
+            "publish_at" => 'nullable|date',
+            'enable-comments' => 'nullable|boolean'
         ];
     }
 
@@ -60,7 +62,8 @@ class CreateVideoRequest extends FormRequest
             'tags.*.exists' => 'این تگ وجود ندارد',
             'publish_at.date' => 'زمان انتشار باید یک تاریخ معتبر باشد',
             'playlist.integer' => 'لیست پخش باید عدد صحیح باشد',
-            'playlist.exists' => 'لیست پخش وجود ندارد'
+            'playlist.exists' => 'لیست پخش وجود ندارد',
+            'enable_comments.boolean' => 'فعال کردن کامنت باید مقداری صحیح یا غلط باشد'
         ];
     }
 

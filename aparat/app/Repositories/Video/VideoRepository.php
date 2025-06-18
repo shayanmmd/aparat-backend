@@ -7,7 +7,6 @@ use App\Http\Requests\Video\CreateVideoRequest;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Interfaces\Models\Video\VideoRepositoryInterface;
 use App\Interfaces\Services\FileUploader\FileUploaderInterface;
-use App\Models\Playlist;
 use App\Models\Video;
 use Auth;
 use DB;
@@ -45,6 +44,7 @@ class VideoRepository implements VideoRepositoryInterface
                 'info' => $request->info,
                 'duration' => $request->duration,
                 'publish-at' => $request->publish_at ?? now(),
+                'enable-comments' => $request->enable_comments ?? true
             ]);
 
             $video->tags()->attach($request->tags);
@@ -52,6 +52,7 @@ class VideoRepository implements VideoRepositoryInterface
 
             DB::commit();
         } catch (\Throwable $th) {
+            dd($th);
             DB::rollBack();
             return $res->tryCatchError();
         }
