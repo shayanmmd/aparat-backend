@@ -5,6 +5,7 @@ namespace App\Repositories\Video;
 use App\Helpers\CustomResponse;
 use App\Http\Requests\Video\CreateVideoRequest;
 use App\Http\Requests\Video\UploadVideoRequest;
+use App\Http\Requests\Video\VideoChangeStateRequest;
 use App\Interfaces\Models\Video\VideoRepositoryInterface;
 use App\Interfaces\Services\FileUploader\FileUploaderInterface;
 use App\Models\Video;
@@ -70,10 +71,34 @@ class VideoRepository implements VideoRepositoryInterface
 
             $result = $this->fileUploaderInterface->store($request->file('video'), $request->slug, '/temps', isMD5: true);
 
-            if (!$result->isSuccessful())
+            if (!$result->isSuccessful())  
                 return $res->failed($result);
 
             return $res->succeed($result->getPayload());
+        } catch (\Throwable $th) {
+            return $res->tryCatchError();
+        }
+    }
+
+    public function changeState(VideoChangeStateRequest $request): CustomResponse
+    {
+        $res = new CustomResponse;
+
+        try {
+            $video = Video::where(['slug' => $request->slug])->first();
+
+            if (empty($video))
+                return $res->failed(['message' => ' این فیلد اسلاگ در سیستم وجود ندارد']);
+
+            $video->state = $request->state;
+
+            $isSuccess = $video->save();
+
+            if (! $isSuccess)
+                return $res->failed(['message' => 'وضعیت تغییر پیدا نکرد. دوباره تلاش کنید']);
+
+            return $res->succeed(['message' => 'وضعیت ویدیو با موفقیت تغییر یافت']);
+            
         } catch (\Throwable $th) {
             return $res->tryCatchError();
         }
