@@ -20,8 +20,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('/video')->group(function(){
         Route::post('/',[VideoController::class,'create']);
+        Route::get('/',[VideoController::class,'list']);
         Route::post('/upload',[VideoController::class,'upload']);
         Route::put('/change-state',[VideoController::class,'changeState']);
+        Route::post('/republish',[VideoController::class,'republish']);
     });
 
     Route::prefix('/playlist')->group(function(){

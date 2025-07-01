@@ -4,10 +4,13 @@ namespace App\Repositories\Video;
 
 use App\Helpers\CustomResponse;
 use App\Http\Requests\Video\CreateVideoRequest;
+use App\Http\Requests\Video\RepublishVideoRequest;
 use App\Http\Requests\Video\UploadVideoRequest;
 use App\Http\Requests\Video\VideoChangeStateRequest;
+use App\Http\Requests\Video\VideoListRequest;
 use App\Interfaces\Models\Video\VideoRepositoryInterface;
 use App\Interfaces\Services\FileUploader\FileUploaderInterface;
+use App\Models\Republish;
 use App\Models\Video;
 use Auth;
 use DB;
@@ -20,6 +23,21 @@ class VideoRepository implements VideoRepositoryInterface
     public function __construct(
         private FileUploaderInterface $fileUploaderInterface
     ) {}
+
+    public function list(VideoListRequest $request): CustomResponse
+    {
+        $res = new CustomResponse;
+
+        try {
+            $currentUser = Auth::user();
+
+            $videos =  $currentUser->videos()->paginate();
+            
+            return $res->succeed($videos);
+        } catch (\Throwable $th) {
+            return $res->tryCatchError();
+        }
+    }
 
     public function create(CreateVideoRequest $request): CustomResponse
     {
@@ -53,7 +71,6 @@ class VideoRepository implements VideoRepositoryInterface
 
             DB::commit();
         } catch (\Throwable $th) {
-            dd($th);
             DB::rollBack();
             return $res->tryCatchError();
         }
@@ -71,7 +88,7 @@ class VideoRepository implements VideoRepositoryInterface
 
             $result = $this->fileUploaderInterface->store($request->file('video'), $request->slug, '/temps', isMD5: true);
 
-            if (!$result->isSuccessful())  
+            if (!$result->isSuccessful())
                 return $res->failed($result);
 
             return $res->succeed($result->getPayload());
@@ -98,7 +115,32 @@ class VideoRepository implements VideoRepositoryInterface
                 return $res->failed(['message' => 'وضعیت تغییر پیدا نکرد. دوباره تلاش کنید']);
 
             return $res->succeed(['message' => 'وضعیت ویدیو با موفقیت تغییر یافت']);
-            
+        } catch (\Throwable $th) {
+            return $res->tryCatchError();
+        }
+    }
+
+    public function republish(RepublishVideoRequest $request): CustomResponse
+    {
+        $res = new CustomResponse;
+
+        try {
+            $currentUser = Auth::user();
+
+            $alreadyExists = Republish::where([
+                'user-id' => $currentUser->id,
+                'video-id' =>  $request->video_id
+            ])->exists();
+
+            if ($alreadyExists)
+                return $res->failed(['message' => 'این ویدیو قبلا بازنشر شده است'], Response::HTTP_BAD_REQUEST);
+
+            Republish::create([
+                'user-id' => $currentUser->id,
+                'video-id' => $request->video_id
+            ]);
+
+            return $res->succeed(['message' => 'این ویدیو با موفقیت بازنشر یافت']);
         } catch (\Throwable $th) {
             return $res->tryCatchError();
         }

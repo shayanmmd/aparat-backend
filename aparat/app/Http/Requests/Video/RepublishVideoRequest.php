@@ -2,20 +2,18 @@
 
 namespace App\Http\Requests\Video;
 
-use App\Models\Video;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Gate;
 
-class VideoChangeStateRequest extends FormRequest
+class RepublishVideoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('changeState', Video::class);
+        return true;
     }
 
     /**
@@ -25,19 +23,17 @@ class VideoChangeStateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $states = Video::CONFIRMED . ',' . Video::BLOCKED;
-
         return [
-            'slug' => 'required',
-            'state' => 'in:' . $states
+            'video_id' => 'required|integer|exists:videos,id'
         ];
     }
 
     public function messages()
     {
         return [
-            'slug.required' => 'فیلد اسلاگ نمیتواند خالی باشد',
-            'state.in' => 'فیلد وضعیت یا این نام وجود ندارد',
+            'video_id.required' => 'ای دی ویدیو نمیتواند خالی باشد',
+            'video_id.integer' => 'ای دی ویدیو باید یک عد صحیح باشد',
+            'video_id.exists' => 'این ویدیو در سیستم وجود ندارد'
         ];
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('republishes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user-id')->nullable();
+            $table->unsignedBigInteger('user-id');
             $table->unsignedBigInteger('video-id');
             $table->timestamps();
 

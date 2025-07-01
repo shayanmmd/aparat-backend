@@ -17,4 +17,9 @@ class User extends Authenticatable
         'password'
     ];
 
+    public function videos()
+    {
+        return $this->hasMany(Video::class,'user-id','id');
+    }
+
 }
