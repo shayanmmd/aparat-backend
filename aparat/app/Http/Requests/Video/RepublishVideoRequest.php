@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Video;
 
+use App\Models\Video;
+use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
@@ -13,7 +15,7 @@ class RepublishVideoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('republish',[Video::class,$this->video_id]);
     }
 
     /**

@@ -17,6 +17,8 @@ use DB;
 use Illuminate\Http\Response;
 use Storage;
 
+use function Laravel\Prompts\select;
+
 class VideoRepository implements VideoRepositoryInterface
 {
 
@@ -31,10 +33,23 @@ class VideoRepository implements VideoRepositoryInterface
         try {
             $currentUser = Auth::user();
 
-            $videos =  $currentUser->videos()->paginate();
-            
-            return $res->succeed($videos);
+            if ($request->has('republished')) {
+                $videos =  $request->republished
+                    ? $publishedVideo = DB::table('republishes')->select('user-id')->where('user-id', '=', $currentUser->id)
+                    : $selfVideos = DB::table('videos')->select('id')->where('user-id', '=', $currentUser->id);
+            } else {
+                $selfVideos = DB::table('videos')
+                    ->select('id')
+                    ->where('user-id', '=', $currentUser->id);
+                $publishedVideo = DB::table('republishes')
+                    ->select('user-id')
+                    ->where('user-id', '=', $currentUser->id);
+                $videos = $selfVideos->unionAll($publishedVideo);
+            }
+
+            return $res->succeed($videos->paginate());
         } catch (\Throwable $th) {
+            dd($th);
             return $res->tryCatchError();
         }
     }
@@ -126,14 +141,6 @@ class VideoRepository implements VideoRepositoryInterface
 
         try {
             $currentUser = Auth::user();
-
-            $alreadyExists = Republish::where([
-                'user-id' => $currentUser->id,
-                'video-id' =>  $request->video_id
-            ])->exists();
-
-            if ($alreadyExists)
-                return $res->failed(['message' => 'این ویدیو قبلا بازنشر شده است'], Response::HTTP_BAD_REQUEST);
 
             Republish::create([
                 'user-id' => $currentUser->id,
