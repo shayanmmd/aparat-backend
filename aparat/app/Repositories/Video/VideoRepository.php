@@ -17,8 +17,6 @@ use DB;
 use Illuminate\Http\Response;
 use Storage;
 
-use function Laravel\Prompts\select;
-
 class VideoRepository implements VideoRepositoryInterface
 {
 
@@ -49,7 +47,6 @@ class VideoRepository implements VideoRepositoryInterface
 
             return $res->succeed($videos->paginate());
         } catch (\Throwable $th) {
-            dd($th);
             return $res->tryCatchError();
         }
     }
